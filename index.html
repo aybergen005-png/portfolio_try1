@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Айберген Абжал — Инженер SCADA / АСУ ТП</title>
+<style>
+  :root{
+    --bg:#12161a;
+    --panel:#1a1f25;
+    --panel-2:#20262d;
+    --line:#2b323a;
+    --text:#e7ebee;
+    --text-dim:#8a94a0;
+    --green:#3fd68c;
+    --amber:#f5a623;
+    --blue:#5b9bd5;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --sans: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 28px,
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ---- top bar ---- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,22,26,0.9);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    max-width:980px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{font-family:var(--mono); font-size:14px; letter-spacing:1px; color:var(--green);}
+  .brand b{color:var(--text); font-weight:600;}
+  .nav-links{display:flex; gap:28px; font-family:var(--mono); font-size:13px; color:var(--text-dim);}
+  .nav-links a:hover{color:var(--green);}
+
+  /* ---- status pill ---- */
+  .status{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12px; letter-spacing:2px;
+    color:var(--green); border:1px solid rgba(63,214,140,0.35);
+    background:rgba(63,214,140,0.07);
+    padding:5px 12px; border-radius:3px;
+  }
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green);
+    animation:blink 1.6s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+  /* ---- hero: HMI panel ---- */
+  .hero{max-width:980px; margin:0 auto; padding:64px 24px 40px;}
+  .tagline{font-family:var(--mono); font-size:12px; color:var(--text-dim); letter-spacing:2px; margin-bottom:18px;}
+  h1{font-size:42px; margin:0 0 6px; font-weight:700; letter-spacing:-0.5px;}
+  h1 span{color:var(--green);}
+  .role{font-size:18px; color:var(--text-dim); margin:0 0 28px; max-width:560px;}
+
+  .tagpanel{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    max-width:640px;
+  }
+  .tag{background:var(--panel); padding:14px 16px;}
+  .tag .k{font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:1.5px; margin-bottom:4px;}
+  .tag .v{font-family:var(--mono); font-size:13px; color:var(--text);}
+
+  /* ---- ladder rung divider (signature element) ---- */
+  .rung{max-width:980px; margin:56px auto; padding:0 24px;}
+  .rung svg{width:100%; height:34px; display:block;}
+  .rung-label{
+    font-family:var(--mono); font-size:10px; letter-spacing:2px; color:var(--text-dim);
+    text-transform:uppercase; margin:0 24px 6px; max-width:932px; margin-left:auto; margin-right:auto;
+  }
+
+  section{max-width:980px; margin:0 auto; padding:0 24px;}
+  h2{font-family:var(--mono); font-size:13px; letter-spacing:3px; color:var(--amber); text-transform:uppercase; margin:0 0 26px;}
+  h2 .n{color:var(--text-dim); margin-right:10px;}
+
+  /* ---- about ---- */
+  .about p{color:var(--text-dim); max-width:660px; font-size:15px;}
+  .about strong{color:var(--text);}
+
+  /* ---- projects as rack modules ---- */
+  .rack{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .module{background:var(--panel); padding:22px 24px; display:grid; grid-template-columns:140px 1fr; gap:20px; align-items:start;}
+  .module:hover{background:var(--panel-2);}
+  .m-id{font-family:var(--mono); font-size:11px; color:var(--blue); letter-spacing:1px; padding-top:3px;}
+  .m-id .st{display:block; margin-top:8px; font-size:10px; color:var(--green);}
+  .m-title{font-size:16px; font-weight:600; margin:0 0 6px;}
+  .m-desc{color:var(--text-dim); font-size:14px; margin:0 0 10px;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{font-family:var(--mono); font-size:11px; color:var(--text-dim); border:1px solid var(--line); padding:3px 8px; border-radius:3px;}
+
+  /* ---- cv ---- */
+  .cv-box{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:24px;
+  }
+  .cv-box p{margin:0; color:var(--text-dim); font-size:14px;}
+  .btn{
+    font-family:var(--mono); font-size:12px; letter-spacing:1px; white-space:nowrap;
+    background:var(--green); color:#0b120d; padding:11px 18px; border-radius:4px; font-weight:600;
+    border:none; cursor:pointer;
+  }
+  .btn:hover{filter:brightness(1.08);}
+
+  /* ---- contact ---- */
+  .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .c-item{background:var(--panel); padding:18px 20px;}
+  .c-item .k{font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:1.5px; margin-bottom:6px;}
+  .c-item .v:hover{color:var(--green);}
+
+  footer{max-width:980px; margin:60px auto 40px; padding:24px 24px 0; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; color:var(--text-dim); display:flex; justify-content:space-between;}
+
+  @media (max-width:640px){
+    .tagpanel{grid-template-columns:1fr;}
+    .module{grid-template-columns:1fr;}
+    .m-id{padding-top:0;}
+    .nav-links{display:none;}
+    .cv-box{flex-direction:column; align-items:flex-start;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .dot{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand"><b>AIBEK.</b>DEV</div>
+    <div class="nav-links">
+      <a href="#about">01 О себе</a>
+      <a href="#projects">02 Проекты</a>
+      <a href="#cv">03 Резюме</a>
+      <a href="#contact">04 Контакты</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="tagline">АСУ ТП / SCADA / РОБОТОТЕХНИКА</div>
+  <h1>Айберген <span>Абжал</span></h1>
+  <p class="role">Инженер по автоматизации и SCADA-системам. Проектирую HMI/SCADA на TIA Portal и WinCC, занимаюсь мобильной робототехникой на ROS 2.</p>
+
+  <div class="tagpanel">
+    <div class="tag"><div class="k">STATUS</div><div class="v"><span class="status"><span class="dot"></span>ONLINE</span></div></div>
+    <div class="tag"><div class="k">LOCATION</div><div class="v">Алматы, KZ</div></div>
+    <div class="tag"><div class="k">AFFIL</div><div class="v">KBTU</div></div>
+  </div>
+</div>
+
+<div class="rung">
+  <svg viewBox="0 0 932 34" preserveAspectRatio="none">
+    <line x1="0" y1="17" x2="932" y2="17" stroke="#2b323a" stroke-width="2"/>
+    <line x1="20" y1="4" x2="20" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="912" y1="4" x2="912" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="230" y1="4" x2="230" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="470" y1="4" x2="470" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="700" y1="4" x2="700" y2="30" stroke="#2b323a" stroke-width="2"/>
+  </svg>
+</div>
+
+<section id="about" class="about">
+  <h2><span class="n">01</span>О себе</h2>
+  <p>Работаю с промышленными системами управления — от контактной логики PLC до верхнего уровня SCADA/HMI. Основной стек: <strong>Siemens TIA Portal (V17–V20), STEP 7 Classic, WinCC Professional/Unified, SIMATIC S7-1200/1500/S7-400</strong>.</p>
+  <p>Параллельно занимаюсь мобильной робототехникой: <strong>ROS 2, LiDAR/SLAM, NVIDIA Jetson/Isaac Sim, FOC-управление электродвигателями</strong>. Ментор в студенческой организации KBTU, участвую в организации и судействе робототехнических соревнований.</p>
+</section>
+
+<div class="rung">
+  <svg viewBox="0 0 932 34" preserveAspectRatio="none">
+    <line x1="0" y1="17" x2="932" y2="17" stroke="#2b323a" stroke-width="2"/>
+    <line x1="20" y1="4" x2="20" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="912" y1="4" x2="912" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="230" y1="4" x2="230" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="470" y1="4" x2="470" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="700" y1="4" x2="700" y2="30" stroke="#2b323a" stroke-width="2"/>
+  </svg>
+</div>
+
+<section id="projects">
+  <h2><span class="n">02</span>Проекты</h2>
+  <div class="rack">
+
+    <div class="module">
+      <div class="m-id">PEND.PID<span class="st">● 2025</span></div>
+      <div>
+        <div class="m-title">Перевёрнутый маятник на подвижной платформе</div>
+        <p class="m-desc">Самобалансирующийся робот на ESP32: PID-регулятор с обратной связью от IMU6050, обработка сигнала через комплементарный фильтр.</p>
+        <div class="chips"><span class="chip">ESP32</span><span class="chip">PID</span><span class="chip">IMU6050</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">DRONE.CV<span class="st">● 80% ACC</span></div>
+      <div>
+        <div class="m-title">Автономный дрон для сбора мусора с воды</div>
+        <p class="m-desc">Прототип дрона для автономного обнаружения и сбора плавающего мусора: компьютерное зрение, сенсор-фьюжн, навигация на ROS. Точность обнаружения 80%, сбор на 40% быстрее.</p>
+        <div class="chips"><span class="chip">ROS</span><span class="chip">Computer Vision</span><span class="chip">Sensor Fusion</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">ECO.SHELL<span class="st">● 2024</span></div>
+      <div>
+        <div class="m-title">KazEnergy Eco-Shell Competition</div>
+        <p class="m-desc">Участие в студенческом энергетическом конкурсе KazEnergy.</p>
+        <div class="chips"><span class="chip">Energy</span><span class="chip">Competition</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">ITFEST.MNT<span class="st">● 2024</span></div>
+      <div>
+        <div class="m-title">ITFest 2024 — ментор и судья</div>
+        <p class="m-desc">Менторство команд на робототехническом треке, судейство соревнований по робофутболу.</p>
+        <div class="chips"><span class="chip">Mentorship</span><span class="chip">Judging</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">AMR.NAV<span class="st">● 100/100</span></div>
+      <div>
+        <div class="m-title">Автономный робот-сортировщик — дипломный проект</div>
+        <p class="m-desc">Мобильный робот на ROS 2 с SLAM-навигацией: S7-1500 + Jetson Orin Nano, LiDAR, FOC/PMSM-привод, цифровой двойник в Isaac Sim.</p>
+        <div class="chips"><span class="chip">ROS 2</span><span class="chip">Jetson</span><span class="chip">Isaac Sim</span><span class="chip">SLAM</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">PMSM.FOC<span class="st">● ANALYSIS</span></div>
+      <div>
+        <div class="m-title">Управление PMSM-двигателем</div>
+        <p class="m-desc">Векторное управление (FOC), синтез PID/LQR-регуляторов, анализ устойчивости по Гурвицу, частотный анализ (Bode/Nyquist).</p>
+        <div class="chips"><span class="chip">FOC</span><span class="chip">LQR</span><span class="chip">Control Theory</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">RL.TRACK<span class="st">● ICMR 2026</span></div>
+      <div>
+        <div class="m-title">RL-трекинг объектов на Unitree Go2</div>
+        <p class="m-desc">Совместная статья: иерархическая политика CommandNet для трекинга объектов на четвероногом роботе в NVIDIA Isaac Lab.</p>
+        <div class="chips"><span class="chip">Reinforcement Learning</span><span class="chip">Isaac Lab</span><span class="chip">Unitree Go2</span></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="m-id">WRO.JUDGE<span class="st">● 2026</span></div>
+      <div>
+        <div class="m-title">WRO Future Engineers 2026 — организатор и судья</div>
+        <p class="m-desc">Оценка GitHub-репозиториев команд по рубрике, подготовка сценариев церемоний открытия и закрытия.</p>
+        <div class="chips"><span class="chip">Mentorship</span><span class="chip">Judging</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="rung">
+  <svg viewBox="0 0 932 34" preserveAspectRatio="none">
+    <line x1="0" y1="17" x2="932" y2="17" stroke="#2b323a" stroke-width="2"/>
+    <line x1="20" y1="4" x2="20" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="912" y1="4" x2="912" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="230" y1="4" x2="230" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="470" y1="4" x2="470" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="700" y1="4" x2="700" y2="30" stroke="#2b323a" stroke-width="2"/>
+  </svg>
+</div>
+
+<section id="cv">
+  <h2><span class="n">03</span>Резюме</h2>
+  <div class="cv-box">
+    <p>Полное резюме в формате PDF: опыт, образование, стек технологий.</p>
+    <a class="btn" href="media/CV.pdf" download>СКАЧАТЬ CV ↓</a>
+  </div>
+</section>
+
+<div class="rung">
+  <svg viewBox="0 0 932 34" preserveAspectRatio="none">
+    <line x1="0" y1="17" x2="932" y2="17" stroke="#2b323a" stroke-width="2"/>
+    <line x1="20" y1="4" x2="20" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="912" y1="4" x2="912" y2="30" stroke="#3fd68c" stroke-width="2"/>
+    <line x1="230" y1="4" x2="230" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="470" y1="4" x2="470" y2="30" stroke="#2b323a" stroke-width="2"/>
+    <line x1="700" y1="4" x2="700" y2="30" stroke="#2b323a" stroke-width="2"/>
+  </svg>
+</div>
+
+<section id="contact">
+  <h2><span class="n">04</span>Контакты</h2>
+  <div class="contact-grid">
+    <div class="c-item"><div class="k">EMAIL</div><a class="v" href="mailto:abzhal02@inbox.ru">abzhal02@inbox.ru</a></div>
+    <div class="c-item"><div class="k">PHONE</div><a class="v" href="tel:+77479804450">+7 747 980 44 50</a></div>
+    <div class="c-item"><div class="k">LINKEDIN</div><a class="v" href="https://www.linkedin.com/in/aybergen-abzhal" target="_blank">/in/aybergen-abzhal</a></div>
+    <div class="c-item"><div class="k">LOCATION</div><div class="v">Алматы, Сатпаева 7А</div></div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Айберген Абжал</span>
+  <span>ALMATY, KZ</span>
+</footer>
+
+</body>
+</html>
